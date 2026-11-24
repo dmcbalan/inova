@@ -892,7 +892,7 @@ html.pl-lock{overflow:hidden}html.pl-lock .rv.in{opacity:0;transform:translateY(
 var CFG={
   phone:"380961189999",          // номер для Viber / WhatsApp / Telegram (без +)
   telegram:"",                   // username Telegram без @, якщо є (напр. "inova_store"); порожньо = відкриваємо за номером
-  tgHook:"https://script.google.com/macros/s/AKfycbxmcw6_iLbR-uY1kuxuhGLYUl__CUIPqnuHMDy4vnWl9M2M-jrhEItyQJOEH7R4cV9V/exec"                    // адреса Google Apps Script (…/exec), що пересилає заявки з форми в Telegram (див. inova-telegram-form.gs)
+  tgHook:"https://script.google.com/macros/s/AKfycbz6BFDd_BO5iNLq8BkJELeR2HlRsRmoxZdAan96ayZs4_yyHf2KT1GH7Kzyb-fU99m8/exec"                    // адреса Google Apps Script (…/exec), що пересилає заявки з форми в Telegram (див. inova-telegram-form.gs)
 };
 /* ======================================== */
 var $=function(s,c){return(c||document).querySelector(s)},$$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
@@ -1021,8 +1021,8 @@ form.addEventListener("submit",function(e){e.preventDefault();
   fbtn.disabled=true;fbtn.style.opacity=.7;note.className="fnote ok";note.textContent="Sending…";
   // text/plain: без CORS-preflight, який Apps Script не підтримує
   fetch(CFG.tgHook,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({subject:data._subject,body:body})})
-  .then(function(r){return r.json()}).then(function(j){if(!j.ok)throw 0})
-  .then(function(){form.reset();note.className="fnote ok";note.textContent="Thank you! Request received 👑 A consultant will contact you shortly."})
+  .then(function(r){return r.json()}).then(function(j){if(!j.ok)throw 0;return j.no})
+  .then(function(no){form.reset();note.className="fnote ok";note.textContent="Thank you! Request"+(no?" #"+no:"")+" received 👑 A consultant will contact you shortly."})
   .catch(function(){note.className="fnote";note.textContent="Couldn’t send. Please call us at +380 68 118 99 99 or message us on any messenger."})
   .then(function(){fbtn.disabled=false;fbtn.style.opacity=""})});
 
