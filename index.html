@@ -880,7 +880,7 @@ html.pl-lock{overflow:hidden}html.pl-lock .rv.in{opacity:0;transform:translateY(
       <button class="mb vb" type="button" data-go="viber"><svg><use href="#vb"/></svg>Viber</button>
       <button class="mb tg" type="button" data-go="telegram"><svg><use href="#tg"/></svg>Telegram</button>
       <button class="mb wa" type="button" data-go="whatsapp"><svg><use href="#wa"/></svg>WhatsApp</button>
-      <button class="mb ml" type="button" data-go="form"><svg><use href="#mail"/></svg>Форма / лист</button>
+      <button class="mb ml" type="button" data-go="form"><svg><use href="#mail"/></svg>Форма заявки</button>
     </div>
     <p class="fnote ok" id="dlgN" style="margin:1rem 0 0" role="status" aria-live="polite"></p>
   </div>
@@ -892,8 +892,7 @@ html.pl-lock{overflow:hidden}html.pl-lock .rv.in{opacity:0;transform:translateY(
 var CFG={
   phone:"380961189999",          // номер для Viber / WhatsApp / Telegram (без +)
   telegram:"",                   // username Telegram без @, якщо є (напр. "inova_store"); порожньо = відкриваємо за номером
-  email:"YOUR-EMAIL@gmail.com",  // пошта, куди приходять заявки з форми (через formsubmit.co)
-  tgHook:""                      // адреса Google Apps Script, що пересилає заявки в Telegram (див. inova-telegram-form.gs); порожньо = вимкнено
+  tgHook:""                      // адреса Google Apps Script (…/exec), що пересилає заявки з форми в Telegram (див. inova-telegram-form.gs)
 };
 /* ======================================== */
 var $=function(s,c){return(c||document).querySelector(s)},$$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
@@ -1010,23 +1009,19 @@ $$("a[data-m]").forEach(function(a){a.addEventListener("click",function(){copy(m
   $$(".cc [data-ask]").forEach(function(b){b.addEventListener("click",function(){var s=$("#fcat");for(var i=0;i<s.options.length;i++)if(s.options[i].text===b.dataset.ask)s.selectedIndex=i})});
 })();
 
-/* форма → Telegram (через Google Apps Script) та/або пошта (formsubmit.co) */
+/* форма → Telegram (через Google Apps Script) */
 var form=$("#form"),note=$("#fnote"),fbtn=$("#fbtn");
 form.addEventListener("submit",function(e){e.preventDefault();
   var f=new FormData(form),name=(f.get("name")||"").trim(),phone=(f.get("phone")||"").trim();
   if(f.get("_honey"))return;
   if(!name){note.className="fnote";note.textContent="Вкажіть, будь ласка, ваше ім’я.";form.name.focus();return}
   if(phone.replace(/\D/g,"").length<9){note.className="fnote";note.textContent="Перевірте номер телефону.";form.phone.focus();return}
-  var data={"Ім’я":name,"Телефон":phone,"Категорія":f.get("category"),"Побажання":(f.get("message")||"").trim()||"—","Зв’язок через":f.get("via"),_subject:"👑 Новий запит з сайту INOVA — "+f.get("category"),_template:"table",_captcha:"false"};
+  var data={"Ім’я":name,"Телефон":phone,"Категорія":f.get("category"),"Побажання":(f.get("message")||"").trim()||"—","Зв’язок через":f.get("via"),_subject:"👑 Новий запит з сайту INOVA — "+f.get("category")};
   var body="Ім’я: "+name+"\nТелефон: "+phone+"\nКатегорія: "+data["Категорія"]+"\nПобажання: "+data["Побажання"]+"\nЗв’язок: "+data["Зв’язок через"];
-  var toMail=!/YOUR-EMAIL/.test(CFG.email);
-  if(!CFG.tgHook&&!toMail){location.href="mailto:?subject="+encodeURIComponent(data._subject)+"&body="+encodeURIComponent(body);note.className="fnote ok";note.textContent="Відкрили поштову програму з готовим листом.";return}
   fbtn.disabled=true;fbtn.style.opacity=.7;note.className="fnote ok";note.textContent="Надсилаємо…";
-  var no=function(){return false},jobs=[];
   // text/plain: без CORS-preflight, який Apps Script не підтримує
-  if(CFG.tgHook)jobs.push(fetch(CFG.tgHook,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({subject:data._subject,body:body})}).then(function(r){return r.json()}).then(function(j){return j.ok===true}).catch(no));
-  if(toMail)jobs.push(fetch("https://formsubmit.co/ajax/"+CFG.email,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)}).then(function(r){return r.ok}).catch(no));
-  Promise.all(jobs).then(function(r){if(r.indexOf(true)<0)throw 0})
+  fetch(CFG.tgHook,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({subject:data._subject,body:body})})
+  .then(function(r){return r.json()}).then(function(j){if(!j.ok)throw 0})
   .then(function(){form.reset();note.className="fnote ok";note.textContent="Дякуємо! Запит отримано 👑 Консультант зв’яжеться з вами найближчим часом."})
   .catch(function(){note.className="fnote";note.textContent="Не вдалося надіслати. Зателефонуйте нам: +380 68 118 99 99 або напишіть у месенджер."})
   .then(function(){fbtn.disabled=false;fbtn.style.opacity=""})});

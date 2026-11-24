@@ -13,11 +13,8 @@ assets/images/        logo-inova.png (логотип без фону, шапка
 НАЛАШТУВАННЯ — у кінці index.html та en/index.html (в обох!), блок «НАЛАШТУВАННЯ»:
   phone     — номер для Viber / WhatsApp / Telegram (зараз 380961189999)
   telegram  — username Telegram без @, якщо є (тоді чат відкриється з готовим текстом)
-  email     — пошта для заявок з форми. Працює через formsubmit.co:
-              після першої заявки на цю пошту прийде лист «Activate» — натисніть його один раз.
-              Поки стоїть YOUR-EMAIL@gmail.com, форма відкриває поштову програму.
-  tgHook    — адреса Google Apps Script, що пересилає заявки в Telegram
-              (скрипт: ../inova-telegram-form.gs). Можна і tgHook, і email — тоді заявка йде в обидва місця.
+  tgHook    — адреса Google Apps Script (…/exec), що пересилає заявки з форми в Telegram-бот
+              (скрипт: ../inova-telegram-form.gs). Поки порожньо — форма показує «Не вдалося надіслати».
 Соцмережі (шапка, мобільне меню, підвал): посилання в блоках <div class="soc"> — Facebook зараз facebook.com/inova, замініть на справжній.
 
 АДРЕСА САЙТУ: https://balanstudy.com.ua/inova/ (тимчасова). При переїзді на свій домен замініть її у index.html, en/index.html, robots.txt, sitemap.xml, а в 404.html — шляхи /inova/.
