@@ -20,5 +20,5 @@ assets/images/        logo-inova.png (логотип без фону, шапка
               (скрипт: ../inova-telegram-form.gs). Можна і tgHook, і email — тоді заявка йде в обидва місця.
 Соцмережі (шапка, мобільне меню, підвал): посилання в блоках <div class="soc"> — Facebook зараз facebook.com/inova, замініть на справжній.
 
-ПЕРЕД ПУБЛІКАЦІЄЮ: замініть YOUR-DOMAIN.com на вашу адресу у index.html, en/index.html, robots.txt, sitemap.xml.
+АДРЕСА САЙТУ: https://balanstudy.com.ua/inova/ (тимчасова). При переїзді на свій домен замініть її у index.html, en/index.html, robots.txt, sitemap.xml, а в 404.html — шляхи /inova/.
 Фото бажано замінити на якісніші (від 1200px по ширині) з тими ж назвами файлів.
